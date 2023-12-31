@@ -1,7 +1,12 @@
 import './App.css'
+import Keyboard from './components/keyboard'
 
 function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>
+  return (
+    <main className="flex h-full justify-center items-center bg-slate-200 ">
+      <Keyboard />
+    </main>
+  )
 }
 
 export default App
