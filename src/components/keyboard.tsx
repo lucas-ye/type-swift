@@ -12,7 +12,6 @@ const init = (keys: string[]) => {
 }
 
 const Keyboard = () => {
-  // const [input, setInput] = useState('')
   const keysLowerDict = init(keysLower)
   const keysUpperDict = init(keysUpper)
   const [keyboard, setKeyboard] = useState(keysLowerDict)
@@ -32,7 +31,6 @@ const Keyboard = () => {
             [key]: { isPressed: !keyboard[key].isPressed },
           })
         return
-        // setInput((input) => input + key)
       }
       //处理特殊按键
       if (specialKey.includes(key)) {
@@ -58,7 +56,7 @@ const Keyboard = () => {
             ...keysUpperDict,
             ShiftRight: keyboard['ShiftRight'],
             ShiftLeft: keyboard['ShiftLeft'],
-            [key]: { isPressed: !keyboard[key].isPressed },
+            [key]: { isPressed: true },
           })
           setIsUpper(true)
         }
@@ -111,7 +109,7 @@ const Keyboard = () => {
           ) {
             setKeyboard({
               ...keysLowerDict,
-              [key]: { isPressed: !keyboard[key].isPressed },
+              [key]: { isPressed: false },
             })
             setIsUpper(false)
           } else {
@@ -119,13 +117,12 @@ const Keyboard = () => {
               ...keysUpperDict,
               ShiftRight: keyboard['ShiftRight'],
               ShiftLeft: keyboard['ShiftLeft'],
-              [key]: { isPressed: !keyboard[key].isPressed },
+              [key]: { isPressed: false },
             })
           }
         }
       }
     }
-    console.log('useEffect 执行')
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
     return () => {
@@ -133,7 +130,7 @@ const Keyboard = () => {
       document.removeEventListener('keyup', handleKeyUp)
     }
   }, [keyboard, keysUpperDict, keysLowerDict, isUpper])
-  console.log(keyboard)
+
   const keyList = isUpper ? keysUpper : keysLower
   return (
     <div className="w-[60rem] flex flex-col items-center gap-3">
