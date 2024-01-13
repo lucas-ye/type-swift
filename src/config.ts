@@ -46,6 +46,7 @@ export const keysLower: string[] = [
   ',',
   '.',
   '/',
+  ' ',
   'ShiftRight',
   'ShiftLeft',
   'Backspace',
@@ -102,6 +103,7 @@ export const keysUpper: string[] = [
   '<',
   '>',
   '?',
+  ' ',
   'ShiftRight',
   'ShiftLeft',
   'Backspace',
@@ -111,4 +113,4 @@ export const keysUpper: string[] = [
 ]
 
 
-export const specialKey: string[] = ['Shift', 'Backspace', 'CapsLock', 'Tab', 'Enter']
+export const specialKey: string[] = ['Shift', 'CapsLock', 'Tab']

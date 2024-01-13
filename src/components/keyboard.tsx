@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Key from './key'
 import { keysLower, specialKey, keysUpper } from '../config'
+import singleHit from '../assets/singleHit.mp3'
 
 // 初始化key列表， 初始化后会返回一个对象，包含isPressed来区分是否有按住某个键
 const init = (keys: string[]) => {
@@ -12,16 +13,30 @@ const init = (keys: string[]) => {
 }
 
 const Keyboard = () => {
+  const audioRef = useRef<HTMLAudioElement>(null)
   const keysLowerDict = init(keysLower)
   const keysUpperDict = init(keysUpper)
   const [keyboard, setKeyboard] = useState(keysLowerDict)
   const [isUpper, setIsUpper] = useState(false)
   useEffect(() => {
+    const playAudio = () => {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
+      }
+    }
     //处理按下的键
     const handleKeyDown = (props: KeyboardEvent) => {
-      const { key, code } = props
+      const { key, code, metaKey, ctrlKey } = props
       console.log(props)
-      console.log(`${key} down`)
+
+      if (
+        (key === 'Backspace' && metaKey) ||
+        (key === 'Backspace' && ctrlKey)
+      ) {
+        props.preventDefault()
+        return
+      }
       //处理普通按键
       const keyList = isUpper ? keysUpper : keysLower
       if (keyList.includes(key) && !specialKey.includes(key)) {
@@ -30,17 +45,12 @@ const Keyboard = () => {
             ...keyboard,
             [key]: { isPressed: !keyboard[key].isPressed },
           })
+        playAudio()
         return
       }
       //处理特殊按键
       if (specialKey.includes(key)) {
-        if (key !== 'Shift' && key !== 'CapsLock') {
-          !keyboard[key].isPressed &&
-            setKeyboard({
-              ...keyboard,
-              [key]: { isPressed: !keyboard[key].isPressed },
-            })
-        } else if (key === 'Shift') {
+        if (key === 'Shift') {
           // 当shift被按下时翻转键盘
           !keyboard[code].isPressed &&
             setKeyboard({
@@ -65,7 +75,6 @@ const Keyboard = () => {
     //处理松开的键
     const handleKeyUp = (props: KeyboardEvent) => {
       const { key, code } = props
-      console.log(`${key} up`)
       const keyList = isUpper ? keysUpper : keysLower
       if (keyList.includes(key) && !specialKey.includes(key)) {
         keyboard[key].isPressed &&
@@ -134,6 +143,7 @@ const Keyboard = () => {
   const keyList = isUpper ? keysUpper : keysLower
   return (
     <div className="w-[60rem] flex flex-col items-center gap-3">
+      <audio id="singleHit" src={singleHit} ref={audioRef}></audio>
       <div className="w-full flex justify-between h-14">
         {keyList.map((k, index) => {
           if (index <= 12) {
@@ -195,6 +205,25 @@ const Keyboard = () => {
           isPressed={keyboard['ShiftRight'].isPressed}
           className="w-32"
         />
+      </div>
+      <div className="w-full flex justify-between h-14">
+        <Key keyLetter="" isPressed={false} className="w-28" />
+        <Key keyLetter="" isPressed={false} className="w-24" />
+        {keyList.map((k, index) => {
+          if (46 < index && index <= 47) {
+            return (
+              <Key
+                key="space"
+                keyLetter="space"
+                isPressed={keyboard[k].isPressed}
+                className=" w-[500px]"
+              />
+            )
+          }
+        })}
+        <Key keyLetter="" isPressed={false} className="w-16" />
+        <Key keyLetter="" isPressed={false} className="w-16" />
+        <Key keyLetter="" isPressed={false} className="w-16" />
       </div>
     </div>
   )

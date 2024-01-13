@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react'
 
-const Timer = () => {
+const Timer = ({ start }: { start: boolean }) => {
   const [time, setTime] = useState(0)
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTime((time) => time + 1)
-    }, 1000)
+    let intervalId: number
+    if (start) {
+      intervalId = setInterval(() => {
+        setTime((time) => time + 0.1)
+      }, 100)
+    }
 
     return () => {
       clearInterval(intervalId)
     }
-  })
+  }, [start])
 
-  return <div>{time}</div>
+  return <div>{time.toFixed(1)}</div>
 }
 export default Timer
